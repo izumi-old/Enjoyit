@@ -3,82 +3,72 @@ package edu.kozhinov.enjoyit.client;
 import edu.kozhinov.enjoyit.base.entity.Message;
 import edu.kozhinov.enjoyit.client.ui.Ui;
 import edu.kozhinov.enjoyit.protocol.AsyncComponent;
-import edu.kozhinov.enjoyit.protocol.entity.Command;
-import edu.kozhinov.enjoyit.protocol.io.Writer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
 
 @Slf4j
 public class AsyncMessagesOrderResolver extends AsyncComponent {
-    private final Collection<Message> messages;
+    private final BlockingQueue<Message> messages;
     private final Ui ui;
-    private final Writer writer;
-    private final AtomicBoolean initMarker;
 
-    private long messageOrder;
+    private Long messageOrder;
 
-    public AsyncMessagesOrderResolver(Collection<Message> messages, Ui ui, Writer writer, AtomicBoolean initMarker) {
+    private final Collection<Message> delayed = new LinkedList<>();
+    private boolean necessaryCheckDelayed = false;
+
+    public AsyncMessagesOrderResolver(BlockingQueue<Message> messages, Ui ui) {
         this.messages = messages;
         this.ui = ui;
-        this.writer = writer;
-        this.initMarker = initMarker;
     }
 
     @Override
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                synchronized (messages) {
-                    if (messages.isEmpty()) {
-                        messages.notifyAll();
-                        messages.wait();
-                    }
-
-                    if (!initMarker.get()) {
-                        long min = Long.MAX_VALUE;
-                        for (Message message : messages) {
-                            if (message.getOrder() < min) {
-                                min = message.getOrder();
-                            }
-                        }
-                        messageOrder = min;
-                        initMarker.set(true);
-                    }
-
-                    boolean found = false;
-                    for (Message message : messages) {
-                        if (message.getOrder() < messageOrder) {
-                            log.debug("removing duplicated message: <{}>", message);
-                            messages.remove(message); //to delete duplicates
-                        } else if (message.getOrder().equals(messageOrder)) {
-                            log.debug("displaying next message: <{}>", message);
-                            ui.displayNewMessage(message);
-                            messages.remove(message);
-                            messageOrder++;
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        for (Message message : messages) { //if there is next message - means we missed something
-                            if (message.getOrder() > messageOrder) {
-                                log.debug("message with X order wasn't found, but there is a message with " +
-                                        "Y > X order. Ask missing message from server");
-                                writer.write(Command.MESSAGE_LOST, new Long[]{messageOrder});
-                                break;
-                            }
-                        }
-
-                        messages.notifyAll();
-                        messages.wait();
-                    }
+                Message message = messages.take();
+                if (messageOrder == null) {
+                    messageOrder = message.getOrder();
                 }
+                resolve(message);
             }
         } catch (InterruptedException ex) {
             log.error(ex.getMessage());
         }
+    }
+
+    private void resolve(Message message) {
+        if (message.getOrder() < messageOrder) {
+            log.debug("removing duplicated message: <{}>", message);
+            messages.remove(message); //to delete duplicates
+        } else if (message.getOrder() > messageOrder) {
+            delayed.add(message);
+            necessaryCheckDelayed = true;
+        } else {
+            dealWithFitMessage(message);
+
+            while (necessaryCheckDelayed) {
+                checkDelayed();
+            }
+        }
+    }
+
+    private void dealWithFitMessage(Message message) {
+        log.debug("displaying next message: <{}>", message);
+        ui.displayNewMessage(message);
+        messageOrder++;
+    }
+
+    private void checkDelayed() {
+        for (Message delayedMessage : delayed) {
+            if (delayedMessage.getOrder().equals(messageOrder)) {
+                delayed.remove(delayedMessage);
+                dealWithFitMessage(delayedMessage);
+                return;
+            }
+        }
+        necessaryCheckDelayed = false;
     }
 }

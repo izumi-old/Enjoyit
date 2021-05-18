@@ -20,8 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,7 +37,7 @@ public class ClientImpl implements Client {
 
     private final JsonMapper jsonMapper;
 
-    private final List<Message> messagesOrder = new LinkedList<>();
+    private final BlockingQueue<Message> messagesOrder = new LinkedBlockingQueue<>();
     private final AtomicBoolean initMarker = new AtomicBoolean(false);
 
     @Autowired
@@ -50,7 +49,7 @@ public class ClientImpl implements Client {
         this.jsonMapper = jsonMapper;
         this.serverListener = new SocketAsyncListener(data, readerFactory.create(socket));
         this.consoleHandler = new ConsoleAsyncHandler(writer);
-        this.messagesResolver = new AsyncMessagesOrderResolver(messagesOrder, ui, writer, initMarker);
+        this.messagesResolver = new AsyncMessagesOrderResolver(messagesOrder, ui);
     }
 
     @Override
@@ -102,11 +101,7 @@ public class ClientImpl implements Client {
         if (request.getCommand() == Command.MESSAGE) {
             Message message = jsonMapper.readValue(request.getJsonBody(), Message.class);
             try {
-                synchronized (messagesOrder) {
-                    messagesOrder.add(message);
-                    messagesOrder.notifyAll();
-                    messagesOrder.wait();
-                }
+                messagesOrder.put(message);
             } catch (InterruptedException ex) {
                 log.error(ex.getMessage());
             }
@@ -148,9 +143,9 @@ public class ClientImpl implements Client {
 
     private void closeQuietly() {
         try {
-            messagesResolver.stop();
-            serverListener.stop();
-            consoleHandler.stop();
+            messagesResolver.interrupt();
+            serverListener.interrupt();
+            consoleHandler.interrupt();
             socket.close();
         } catch (Exception ex) {
             log.warn(ex.getMessage());
