@@ -4,8 +4,8 @@ import edu.kozhinov.enjoyit.protocol.entity.Command;
 import edu.kozhinov.enjoyit.protocol.entity.Data;
 import edu.kozhinov.enjoyit.protocol.entity.Status;
 import edu.kozhinov.enjoyit.protocol.exception.MappingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static edu.kozhinov.enjoyit.protocol.Constants.DATA_MESSAGE_DELIMITER;
@@ -14,21 +14,13 @@ import static edu.kozhinov.enjoyit.protocol.Constants.EMPTY_JSON;
 import static edu.kozhinov.enjoyit.protocol.Constants.EMPTY_STATUS_MESSAGE;
 import static edu.kozhinov.enjoyit.protocol.Constants.MESSAGE_POINTER;
 
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class DataMapper implements BiMapper<String, Data> {
     private final BiMapper<String, Data.Type> typeMapper;
     private final BiMapper<String, Command> commandMapper;
     private final BiMapper<String, Status> statusMapper;
-
-    @Autowired
-    public DataMapper(BiMapper<String, Data.Type> typeMapper,
-                      BiMapper<String, Command> commandMapper,
-                      BiMapper<String, Status> statusMapper) {
-        this.typeMapper = typeMapper;
-        this.commandMapper = commandMapper;
-        this.statusMapper = statusMapper;
-    }
 
     @Override
     public Data map1(String s) {

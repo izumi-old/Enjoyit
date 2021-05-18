@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.server.config;
+package edu.kozhinov.enjoyit.server;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

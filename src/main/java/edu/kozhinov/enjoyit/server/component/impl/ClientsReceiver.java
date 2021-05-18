@@ -1,7 +1,6 @@
 package edu.kozhinov.enjoyit.server.component.impl;
 
 import edu.kozhinov.enjoyit.server.component.ClientRepresentation;
-import edu.kozhinov.enjoyit.server.factory.ClientRepresentationFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

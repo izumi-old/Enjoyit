@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static edu.kozhinov.enjoyit.server.utils.Constants.GENERAL_ROOM_NAME;
+import static edu.kozhinov.enjoyit.server.Constants.GENERAL_ROOM_NAME;
 
 @RequiredArgsConstructor
 @Repository

@@ -6,7 +6,7 @@ import edu.kozhinov.enjoyit.server.component.impl.SimpleIdGenerator;
 import lombok.Data;
 import lombok.ToString;
 
-import static edu.kozhinov.enjoyit.server.utils.Constants.UNNAMED_PERSON;
+import static edu.kozhinov.enjoyit.server.Constants.UNNAMED_PERSON;
 
 @JsonIgnoreProperties({"currentRoom"})
 @Data

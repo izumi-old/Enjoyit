@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static edu.kozhinov.enjoyit.server.utils.Constants.UNNAMED_ROOM;
+import static edu.kozhinov.enjoyit.server.Constants.UNNAMED_ROOM;
 
 @Data
 public class Room {

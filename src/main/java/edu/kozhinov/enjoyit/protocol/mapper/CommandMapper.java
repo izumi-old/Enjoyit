@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 @Component
 public class CommandMapper implements BiMapper<String, Command> {
+
     @Override
     public Command map1(String s) {
         if (s == null) {

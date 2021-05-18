@@ -57,7 +57,7 @@ public class ConsoleAsyncHandler extends AsyncComponent {
 
     private void handle(String input) {
         if (input.startsWith(Flag.CONNECT_TO_ROOM.asString())) {
-            parseRoom(input, Flag.CONNECT_TO_ROOM).ifPresent(room -> writer.write(Command.CONNECT_TO_ROOM, room));
+            parseRoom(input, Flag.CONNECT_TO_ROOM).ifPresent(room -> writer.write(Command.CONNECT_TO_ROOM, room)); //todo: somewhere here I have to block/reset ?
         } else if (input.startsWith(Flag.LOGIN.asString())) {
             parsePerson(input, Flag.LOGIN).ifPresent(person -> writer.write(Command.LOGIN, person));
         } else if (input.startsWith(Flag.REGISTER.asString())) {

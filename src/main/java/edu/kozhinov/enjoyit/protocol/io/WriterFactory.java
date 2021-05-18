@@ -23,6 +23,7 @@ public class WriterFactory {
     }
 
     public Writer create(Socket socket) throws IOException {
-        return create(new PrintWriter(socket.getOutputStream(), false));
+        PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), false);
+        return create(printWriter);
     }
 }

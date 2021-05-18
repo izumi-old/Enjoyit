@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 @Component
 public class DataTypeMapper implements BiMapper<String, Data.Type> {
+
     @Override
     public Data.Type map1(String s) {
         if (s == null || s.length() == 0) {

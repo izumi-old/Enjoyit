@@ -1,7 +1,6 @@
 package edu.kozhinov.enjoyit.server;
 
 import edu.kozhinov.enjoyit.server.component.Server;
-import edu.kozhinov.enjoyit.server.config.Config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

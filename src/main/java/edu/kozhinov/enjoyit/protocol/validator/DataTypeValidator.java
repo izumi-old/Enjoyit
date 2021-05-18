@@ -5,7 +5,8 @@ import edu.kozhinov.enjoyit.protocol.exception.ValidationException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataTypeValidator implements Validator<Data.Type>{
+public class DataTypeValidator implements Validator<Data.Type> {
+
     @Override
     public void validate(Data.Type type) throws ValidationException {
         if (type == null) {

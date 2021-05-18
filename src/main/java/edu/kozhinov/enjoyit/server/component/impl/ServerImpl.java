@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static edu.kozhinov.enjoyit.server.utils.Constants.GENERAL_ROOM_NAME;
+import static edu.kozhinov.enjoyit.server.Constants.GENERAL_ROOM_NAME;
 
 @Slf4j
 @RequiredArgsConstructor

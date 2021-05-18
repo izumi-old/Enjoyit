@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 @Component
 public class StatusMapper implements BiMapper<String, Status> {
+
     @Override
     public Status map1(String s) {
         if (s == null) {

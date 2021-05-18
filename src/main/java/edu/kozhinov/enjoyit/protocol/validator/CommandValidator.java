@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommandValidator implements Validator<Command> {
+
     @Override
     public void validate(Command command) throws ValidationException {
         if (command == null) {

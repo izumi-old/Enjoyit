@@ -10,11 +10,12 @@ import edu.kozhinov.enjoyit.protocol.entity.SimpleRequest;
 import edu.kozhinov.enjoyit.protocol.entity.SimpleResponse;
 import edu.kozhinov.enjoyit.protocol.entity.Status;
 import edu.kozhinov.enjoyit.protocol.mapper.BiMapper;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.io.PrintWriter;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class Writer {
     private final PrintWriter out;
     private final BiMapper<String, Data> mapper;

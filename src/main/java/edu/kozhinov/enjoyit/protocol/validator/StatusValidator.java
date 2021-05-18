@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StatusValidator implements Validator<Status> {
+
     @Override
     public void validate(Status status) throws ValidationException {
         if (status == null) {

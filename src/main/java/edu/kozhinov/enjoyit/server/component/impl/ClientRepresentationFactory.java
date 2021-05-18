@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.server.factory;
+package edu.kozhinov.enjoyit.server.component.impl;
 
 import edu.kozhinov.enjoyit.core.async.AsyncHandlerFactory;
 import edu.kozhinov.enjoyit.core.component.JsonMapper;

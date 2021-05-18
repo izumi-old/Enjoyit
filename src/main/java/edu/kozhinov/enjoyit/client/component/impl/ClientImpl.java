@@ -5,7 +5,7 @@ import edu.kozhinov.enjoyit.core.async.AsyncHandlerFactory;
 import edu.kozhinov.enjoyit.core.component.JsonMapper;
 import edu.kozhinov.enjoyit.core.entity.Message;
 import edu.kozhinov.enjoyit.core.entity.Room;
-import edu.kozhinov.enjoyit.client.AsyncMessagesOrderResolver;
+import edu.kozhinov.enjoyit.client.AsyncMessagesResolver;
 import edu.kozhinov.enjoyit.client.component.Client;
 import edu.kozhinov.enjoyit.client.ui.Ui;
 import edu.kozhinov.enjoyit.client.ui.console.ConsoleAsyncHandler;
@@ -31,7 +31,7 @@ public class ClientImpl implements Client {
     private final Socket socket;
 
     private final AsyncComponent uiInputHandler;
-    private final AsyncComponent messagesResolver;
+    private final AsyncMessagesResolver messagesResolver;
     private final AsyncComponent asyncHandler;
 
     private final Ui ui;
@@ -49,7 +49,7 @@ public class ClientImpl implements Client {
 
         this.asyncHandler = asyncHandlerFactory.create(this);
         this.uiInputHandler = new ConsoleAsyncHandler(writerFactory.create(socket));
-        this.messagesResolver = new AsyncMessagesOrderResolver(messagesToDisplay, ui);
+        this.messagesResolver = new AsyncMessagesResolver(messagesToDisplay, ui);
     }
 
     @Override

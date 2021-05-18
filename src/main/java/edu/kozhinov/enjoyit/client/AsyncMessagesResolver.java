@@ -3,33 +3,34 @@ package edu.kozhinov.enjoyit.client;
 import edu.kozhinov.enjoyit.core.entity.Message;
 import edu.kozhinov.enjoyit.client.ui.Ui;
 import edu.kozhinov.enjoyit.core.async.AsyncComponent;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+@RequiredArgsConstructor
 @Slf4j
-public class AsyncMessagesOrderResolver extends AsyncComponent {
+public class AsyncMessagesResolver extends AsyncComponent {
     private final BlockingQueue<Message> messages;
     private final Ui ui;
 
     private Long messageOrder;
+    private final Lock lock = new ReentrantLock();
 
     private final Collection<Message> delayed = new LinkedList<>();
     private boolean necessaryCheckDelayed = false;
-
-    public AsyncMessagesOrderResolver(BlockingQueue<Message> messages, Ui ui) {
-        this.messages = messages;
-        this.ui = ui;
-    }
 
     @Override
     public void run() {
         try {
             while (!Thread.interrupted()) {
                 Message message = messages.take();
-                if (messageOrder == null) {
+                if (messageOrder == null || message.getOrder() <= 2) {
+                    log.debug("init order");
                     messageOrder = message.getOrder();
                 }
                 resolve(message);
@@ -39,19 +40,35 @@ public class AsyncMessagesOrderResolver extends AsyncComponent {
         }
     }
 
-    private void resolve(Message message) {
-        if (message.getOrder() < messageOrder) {
-            log.debug("removing duplicated message: <{}>", message);
-            messages.remove(message); //to delete duplicates
-        } else if (message.getOrder() > messageOrder) {
-            delayed.add(message);
-            necessaryCheckDelayed = true;
-        } else {
-            dealWithFitMessage(message);
+    public void resetOrder() {
+        try {
+            log.debug("reset order");
+            lock.lock();
+            this.messageOrder = null;
+            this.delayed.clear();
+            necessaryCheckDelayed = false;
+        } finally {
+            lock.unlock();
+        }
+    }
 
-            while (necessaryCheckDelayed) {
-                checkDelayed();
+    private void resolve(Message message) {
+        try {
+            lock.lock();
+            if (message.getOrder() < messageOrder) {
+                log.debug("removing duplicated message: <{}>", message);
+                messages.remove(message); //to delete duplicates
+            } else if (message.getOrder() > messageOrder) {
+                delayed.add(message);
+                necessaryCheckDelayed = true;
+            } else {
+                dealWithFitMessage(message);
+                while (necessaryCheckDelayed) {
+                    checkDelayed();
+                }
             }
+        } finally {
+            lock.unlock();
         }
     }
 
