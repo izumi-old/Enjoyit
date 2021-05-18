@@ -1,6 +1,6 @@
 package edu.kozhinov.enjoyit.server.repository;
 
-import edu.kozhinov.enjoyit.base.entity.Person;
+import edu.kozhinov.enjoyit.core.entity.Person;
 
 import java.util.Optional;
 

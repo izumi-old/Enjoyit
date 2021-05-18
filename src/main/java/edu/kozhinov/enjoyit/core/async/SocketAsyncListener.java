@@ -1,7 +1,7 @@
-package edu.kozhinov.enjoyit.protocol.io;
+package edu.kozhinov.enjoyit.core.async;
 
-import edu.kozhinov.enjoyit.protocol.AsyncComponent;
 import edu.kozhinov.enjoyit.protocol.entity.Data;
+import edu.kozhinov.enjoyit.protocol.io.Reader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

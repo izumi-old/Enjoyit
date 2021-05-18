@@ -1,6 +1,6 @@
 package edu.kozhinov.enjoyit.server.repository.impl.stub;
 
-import edu.kozhinov.enjoyit.base.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Room;
 import edu.kozhinov.enjoyit.server.component.IdGenerator;
 import edu.kozhinov.enjoyit.server.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;

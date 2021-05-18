@@ -1,8 +1,8 @@
 package edu.kozhinov.enjoyit.client.ui.console;
 
-import edu.kozhinov.enjoyit.base.entity.Message;
-import edu.kozhinov.enjoyit.base.entity.Person;
-import edu.kozhinov.enjoyit.base.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Person;
+import edu.kozhinov.enjoyit.core.entity.Room;
 import edu.kozhinov.enjoyit.client.ui.Ui;
 import org.springframework.stereotype.Component;
 

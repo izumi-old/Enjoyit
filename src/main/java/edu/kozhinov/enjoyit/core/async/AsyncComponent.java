@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.protocol;
+package edu.kozhinov.enjoyit.core.async;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,6 +1,6 @@
 package edu.kozhinov.enjoyit.protocol.entity;
 
-import edu.kozhinov.enjoyit.base.component.JsonMapper;
+import edu.kozhinov.enjoyit.core.component.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -12,7 +12,7 @@ import java.net.Socket;
 
 @PropertySource("classpath:client/application.properties")
 @ComponentScan("edu.kozhinov.enjoyit.client")
-@Import(edu.kozhinov.enjoyit.base.config.Config.class)
+@Import(edu.kozhinov.enjoyit.core.config.Config.class)
 @Configuration
 public class Config {
 

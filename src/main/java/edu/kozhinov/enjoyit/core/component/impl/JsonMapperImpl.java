@@ -1,9 +1,9 @@
-package edu.kozhinov.enjoyit.base.component.impl;
+package edu.kozhinov.enjoyit.core.component.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.kozhinov.enjoyit.base.component.JsonMapper;
-import edu.kozhinov.enjoyit.base.exception.ParseException;
+import edu.kozhinov.enjoyit.core.component.JsonMapper;
+import edu.kozhinov.enjoyit.core.exception.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

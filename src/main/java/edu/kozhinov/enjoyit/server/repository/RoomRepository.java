@@ -1,6 +1,6 @@
 package edu.kozhinov.enjoyit.server.repository;
 
-import edu.kozhinov.enjoyit.base.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Room;
 
 import java.util.Optional;
 

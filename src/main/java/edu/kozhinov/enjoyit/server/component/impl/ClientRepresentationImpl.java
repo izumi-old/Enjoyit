@@ -1,17 +1,17 @@
 package edu.kozhinov.enjoyit.server.component.impl;
 
-import edu.kozhinov.enjoyit.base.component.JsonMapper;
-import edu.kozhinov.enjoyit.protocol.AsyncComponent;
+import edu.kozhinov.enjoyit.core.component.JsonMapper;
+import edu.kozhinov.enjoyit.core.async.AsyncComponent;
 import edu.kozhinov.enjoyit.protocol.entity.Status;
-import edu.kozhinov.enjoyit.base.entity.Room;
-import edu.kozhinov.enjoyit.base.entity.Message;
-import edu.kozhinov.enjoyit.base.entity.Person;
+import edu.kozhinov.enjoyit.core.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Person;
 import edu.kozhinov.enjoyit.protocol.entity.Command;
 import edu.kozhinov.enjoyit.protocol.entity.Data;
 import edu.kozhinov.enjoyit.protocol.entity.Request;
 import edu.kozhinov.enjoyit.protocol.entity.Response;
 import edu.kozhinov.enjoyit.protocol.io.ReaderFactory;
-import edu.kozhinov.enjoyit.protocol.io.SocketAsyncListener;
+import edu.kozhinov.enjoyit.core.async.SocketAsyncListener;
 import edu.kozhinov.enjoyit.protocol.io.Writer;
 import edu.kozhinov.enjoyit.protocol.io.WriterFactory;
 import edu.kozhinov.enjoyit.server.component.ClientRepresentation;

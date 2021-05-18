@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 @PropertySource("classpath:server/application.properties")
 @ComponentScan("edu.kozhinov.enjoyit.server")
-@Import(edu.kozhinov.enjoyit.base.config.Config.class)
+@Import(edu.kozhinov.enjoyit.core.config.Config.class)
 @Configuration
 public class Config {
 

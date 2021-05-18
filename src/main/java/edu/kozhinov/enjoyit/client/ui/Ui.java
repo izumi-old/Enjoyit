@@ -1,7 +1,7 @@
 package edu.kozhinov.enjoyit.client.ui;
 
-import edu.kozhinov.enjoyit.base.entity.Message;
-import edu.kozhinov.enjoyit.base.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Room;
 
 import java.util.Collection;
 

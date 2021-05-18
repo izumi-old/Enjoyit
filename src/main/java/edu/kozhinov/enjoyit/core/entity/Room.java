@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.base.entity;
+package edu.kozhinov.enjoyit.core.entity;
 
 import edu.kozhinov.enjoyit.server.component.IdGenerator;
 import edu.kozhinov.enjoyit.server.component.impl.SimpleIdGenerator;

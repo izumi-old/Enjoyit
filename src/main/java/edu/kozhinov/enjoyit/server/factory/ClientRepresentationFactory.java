@@ -1,6 +1,6 @@
 package edu.kozhinov.enjoyit.server.factory;
 
-import edu.kozhinov.enjoyit.base.component.JsonMapper;
+import edu.kozhinov.enjoyit.core.component.JsonMapper;
 import edu.kozhinov.enjoyit.protocol.io.ReaderFactory;
 import edu.kozhinov.enjoyit.protocol.io.WriterFactory;
 import edu.kozhinov.enjoyit.server.component.ClientRepresentation;

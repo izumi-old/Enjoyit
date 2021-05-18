@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.base.exception;
+package edu.kozhinov.enjoyit.core.exception;
 
 public class EnjoyitException extends RuntimeException {
     public EnjoyitException() {

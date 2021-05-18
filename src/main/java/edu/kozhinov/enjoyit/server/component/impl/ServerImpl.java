@@ -1,9 +1,9 @@
 package edu.kozhinov.enjoyit.server.component.impl;
 
-import edu.kozhinov.enjoyit.base.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Message;
 import edu.kozhinov.enjoyit.server.component.ClientRepresentation;
 import edu.kozhinov.enjoyit.server.component.Server;
-import edu.kozhinov.enjoyit.base.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Room;
 import edu.kozhinov.enjoyit.server.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

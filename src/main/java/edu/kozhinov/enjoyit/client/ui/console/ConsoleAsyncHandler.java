@@ -1,11 +1,11 @@
 package edu.kozhinov.enjoyit.client.ui.console;
 
 import edu.kozhinov.enjoyit.protocol.entity.Command;
-import edu.kozhinov.enjoyit.protocol.AsyncComponent;
+import edu.kozhinov.enjoyit.core.async.AsyncComponent;
 import edu.kozhinov.enjoyit.protocol.io.Writer;
-import edu.kozhinov.enjoyit.base.entity.Message;
-import edu.kozhinov.enjoyit.base.entity.Person;
-import edu.kozhinov.enjoyit.base.entity.Room;
+import edu.kozhinov.enjoyit.core.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Person;
+import edu.kozhinov.enjoyit.core.entity.Room;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -73,6 +73,7 @@ public class ConsoleAsyncHandler extends AsyncComponent {
         } else if (input.startsWith(Flag.EXIT.asString())) {
             writer.write(DISCONNECT);
             writer.close();
+            System.exit(0);
         } else if (input.startsWith(Flag.HELP.asString())) {
             help();
         } else if (input.startsWith(Flag.FLAG_KEYWORD.asString())) {

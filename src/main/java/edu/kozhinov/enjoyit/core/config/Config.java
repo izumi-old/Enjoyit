@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.base.config;
+package edu.kozhinov.enjoyit.core.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;

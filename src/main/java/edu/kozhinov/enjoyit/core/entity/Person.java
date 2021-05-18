@@ -1,4 +1,4 @@
-package edu.kozhinov.enjoyit.base.entity;
+package edu.kozhinov.enjoyit.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.kozhinov.enjoyit.server.component.IdGenerator;

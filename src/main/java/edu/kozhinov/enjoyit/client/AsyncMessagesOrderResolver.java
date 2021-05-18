@@ -1,8 +1,8 @@
 package edu.kozhinov.enjoyit.client;
 
-import edu.kozhinov.enjoyit.base.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Message;
 import edu.kozhinov.enjoyit.client.ui.Ui;
-import edu.kozhinov.enjoyit.protocol.AsyncComponent;
+import edu.kozhinov.enjoyit.core.async.AsyncComponent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;

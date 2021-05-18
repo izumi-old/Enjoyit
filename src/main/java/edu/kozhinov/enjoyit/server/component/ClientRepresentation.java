@@ -1,7 +1,7 @@
 package edu.kozhinov.enjoyit.server.component;
 
-import edu.kozhinov.enjoyit.base.entity.Message;
-import edu.kozhinov.enjoyit.base.entity.Person;
+import edu.kozhinov.enjoyit.core.entity.Message;
+import edu.kozhinov.enjoyit.core.entity.Person;
 
 public interface ClientRepresentation extends Runnable {
     Person getPerson();

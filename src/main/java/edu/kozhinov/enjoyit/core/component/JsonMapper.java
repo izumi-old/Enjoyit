@@ -1,6 +1,6 @@
-package edu.kozhinov.enjoyit.base.component;
+package edu.kozhinov.enjoyit.core.component;
 
-import edu.kozhinov.enjoyit.base.exception.ParseException;
+import edu.kozhinov.enjoyit.core.exception.ParseException;
 
 public interface JsonMapper {
     String writeValue(Object o) throws ParseException;
