@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 
 @Slf4j
-public class SocketAsyncListener extends AsyncComponent {
+public class AsyncSocketListener extends AsyncComponent {
     private final BlockingQueue<Data> data;
     private final Reader reader;
 
-    public SocketAsyncListener(BlockingQueue<Data> data, Reader reader) {
+    public AsyncSocketListener(BlockingQueue<Data> data, Reader reader) {
         this.data = data;
         this.reader = reader;
         log.debug("a socket async listener <{}>, <{}> is ready to work", super.hashCode(), hashCode());

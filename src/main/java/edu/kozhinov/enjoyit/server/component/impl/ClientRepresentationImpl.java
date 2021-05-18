@@ -1,7 +1,7 @@
 package edu.kozhinov.enjoyit.server.component.impl;
 
+import edu.kozhinov.enjoyit.core.async.*;
 import edu.kozhinov.enjoyit.core.component.JsonMapper;
-import edu.kozhinov.enjoyit.core.async.AsyncComponent;
 import edu.kozhinov.enjoyit.protocol.entity.Status;
 import edu.kozhinov.enjoyit.core.entity.Room;
 import edu.kozhinov.enjoyit.core.entity.Message;
@@ -10,8 +10,6 @@ import edu.kozhinov.enjoyit.protocol.entity.Command;
 import edu.kozhinov.enjoyit.protocol.entity.Data;
 import edu.kozhinov.enjoyit.protocol.entity.Request;
 import edu.kozhinov.enjoyit.protocol.entity.Response;
-import edu.kozhinov.enjoyit.protocol.io.ReaderFactory;
-import edu.kozhinov.enjoyit.core.async.SocketAsyncListener;
 import edu.kozhinov.enjoyit.protocol.io.Writer;
 import edu.kozhinov.enjoyit.protocol.io.WriterFactory;
 import edu.kozhinov.enjoyit.server.component.ClientRepresentation;
@@ -26,7 +24,6 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
 public class ClientRepresentationImpl implements ClientRepresentation {
@@ -37,8 +34,7 @@ public class ClientRepresentationImpl implements ClientRepresentation {
 
     private final Writer writer;
 
-    private final LinkedBlockingQueue<Data> data = new LinkedBlockingQueue<>();
-    private final AsyncComponent asyncListener;
+    private final AsyncHandler asyncHandler;
 
     private Person person;
 
@@ -47,35 +43,33 @@ public class ClientRepresentationImpl implements ClientRepresentation {
     private final MessageRepository messageRepository;
 
     public ClientRepresentationImpl(JsonMapper jsonMapper, Socket socket, Server server, WriterFactory writerFactory,
-                                    ReaderFactory readerFactory, PersonRepository personRepository,
-                                    RoomRepository roomRepository, MessageRepository messageRepository) throws IOException {
+                                    PersonRepository personRepository, RoomRepository roomRepository,
+                                    MessageRepository messageRepository, AsyncHandlerFactory asyncHandlerFactory) throws IOException {
         this.jsonMapper = jsonMapper;
 
         this.socket = socket;
         this.server = server;
 
-        this.asyncListener = new SocketAsyncListener(data, readerFactory.create(socket));
         this.writer = writerFactory.create(socket);
 
         this.personRepository = personRepository;
         this.roomRepository = roomRepository;
         this.messageRepository = messageRepository;
+
+        this.asyncHandler = asyncHandlerFactory.create(this);
     }
 
     @Override
     public void run() {
-        asyncListener.start(); //thread #1 to listen data-messages from client
-
-        while (!asyncListener.isAlive()) {
-            try {
-                Thread.sleep(250L);
-            } catch (InterruptedException ignored) {}
-        }
-
-        person = new Person(); //while user not login server recognizes him as an anonymous
+        asyncHandler.start();
+        person = new Person();
         relocate(roomRepository.getGeneral());
         sendConnect();
-        new Thread(this::handler).start(); //thread #2 to handle data-messages from client
+    }
+
+    @Override
+    public Socket getSocket() {
+        return socket;
     }
 
     @Override
@@ -88,15 +82,8 @@ public class ClientRepresentationImpl implements ClientRepresentation {
         return person;
     }
 
-    private void handle(Data data) { //resolve what dealing with
-        if (data.getType() == Data.Type.REQUEST) {
-            handle(Request.convert(data));
-        } else if (data.getType() == Data.Type.RESPONSE) {
-            handle(Response.convert(data));
-        }
-    }
-
-    private void handle(Request request) { //client asks to do some action
+    @Override
+    public void handle(Request request) { //client asks to do some action
         Command command = request.getCommand();
         if (command == Command.MESSAGE) {
             sendMessage(request);
@@ -118,6 +105,16 @@ public class ClientRepresentationImpl implements ClientRepresentation {
             messageLost(request);
         } else if (command == Command.DISCONNECT) {
             closeQuietly();
+        }
+    }
+
+    @Override
+    public void handle(Response response) { //client got server updates (got another clients messages)
+        if (response.getCommand().equals(Command.MESSAGE_LOST)) { //todo: what will happens if user left room where he was?
+            messageLost(response);
+        } else {
+            log.warn("Some strange behaviour was traced. Client sent a response, but it's unknown situation. " +
+                    "Response: <{}>", response);
         }
     }
 
@@ -234,15 +231,6 @@ public class ClientRepresentationImpl implements ClientRepresentation {
         writer.write(Command.ROOM_STATUS, Status.OK, person.getCurrentRoom());
     }
 
-    private void handle(Response response) { //client got server updates (got another clients messages)
-        if (response.getCommand().equals(Command.MESSAGE_LOST)) { //todo: what will happens if user left room where he was?
-            messageLost(response);
-        } else {
-            log.warn("Some strange behaviour was traced. Client sent a response, but it's unknown situation. " +
-                            "Response: <{}>", response);
-        }
-    }
-
     private void messageLost(Data data) {
         Long[] orders = jsonMapper.readValue(data.getJsonBody(), Long[].class);
         Arrays.stream(orders)
@@ -259,29 +247,15 @@ public class ClientRepresentationImpl implements ClientRepresentation {
                 });
     }
 
-    private void handler() {
-        synchronized (data) {
-            try {
-                while (!socket.isClosed()) {
-                    handle(data.take());
-                }
-            } catch (InterruptedException ex) {
-                log.error(ex.getMessage());
-            } finally {
-                closeQuietly();
-            }
-        }
-    }
-
     private void closeQuietly() {
         try {
             person.getCurrentRoom().getPersons().remove(person);
-            asyncListener.stop();
             server.remove(this);
+            asyncHandler.interrupt();
             writer.close();
             socket.close();
         } catch (Exception ex) {
-            log.info(ex.getMessage());
+            log.error(ex.getMessage());
         }
     }
 }

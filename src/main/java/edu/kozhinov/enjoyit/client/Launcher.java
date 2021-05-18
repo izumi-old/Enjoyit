@@ -10,7 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Launcher {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
-        context.getBean(Client.class).start();
+        context.getBean(Client.class).run();
         log.info("The client application started successfully");
     }
 }

@@ -1,5 +1,6 @@
 package edu.kozhinov.enjoyit.client.component;
 
-public interface Client {
-    void start();
+import edu.kozhinov.enjoyit.core.AsyncSocketHolder;
+
+public interface Client extends AsyncSocketHolder, Runnable {
 }
