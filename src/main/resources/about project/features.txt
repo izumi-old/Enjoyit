@@ -1,0 +1,10 @@
+1) a client can write a message which other clients will see
+2) a client can see messages of another clients
+
+3) a client can attach a file to a message
+4) a client can enter to a room and he will see messages of clients who is in the room only
+4.1) when the client enter to the room he see latest x messages
+5) room can has a password
+6) a client can create a room and set password
+
+//todo: allow a client to send file to an another client directly
