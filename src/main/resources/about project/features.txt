@@ -6,5 +6,3 @@
 4.1) when the client enter to the room he see latest x messages
 5) room can has a password
 6) a client can create a room and set password
-
-//todo: allow a client to send file to an another client directly

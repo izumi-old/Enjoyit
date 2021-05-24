@@ -23,6 +23,7 @@ import static edu.kozhinov.enjoyit.protocol.entity.SimpleRequest.ROOM_STATUS;
 public class ConsoleAsyncHandler extends AsyncComponent {
     private static final String INPUT_END = "@";
     private final Writer writer;
+    private StringBuilder helper = new StringBuilder();
 
     public ConsoleAsyncHandler(Writer writer) {
         this.writer = writer;
@@ -32,22 +33,16 @@ public class ConsoleAsyncHandler extends AsyncComponent {
     @Override
     public void run() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder helper = new StringBuilder();
+
         try {
             while (!Thread.interrupted()) {
                 String line = reader.readLine();
                 log.debug("a console async handler <{}> got a new input part from the client", hashCode());
-                int indexOf = line.indexOf(INPUT_END);
-                if (indexOf == -1) {
-                    helper.append(line);
-                    helper.append(String.format("%n"));
+                boolean end = line.contains(INPUT_END);
+                if (end) {
+                    endInput(line);
                 } else {
-                    helper.append(line, 0, indexOf);
-                    String input = helper.toString();
-                    helper = new StringBuilder(line.length() > indexOf ? line.substring(indexOf + 1) : "");
-                    log.debug("a console async handler <{}> got the end of an input from the client: <{}>",
-                            hashCode(), input);
-                    handle(input);
+                    continueInput(line);
                 }
             }
         } catch (IOException ex) {
@@ -55,28 +50,43 @@ public class ConsoleAsyncHandler extends AsyncComponent {
         }
     }
 
+    private void endInput(String line) {
+        int indexOf = line.indexOf(INPUT_END);
+        helper.append(line, 0, indexOf);
+        String input = helper.toString();
+        helper = new StringBuilder(line.length() > indexOf ? line.substring(indexOf + 1) : "");
+        log.debug("a console async handler <{}> got the end of an input from the client: <{}>",
+                hashCode(), input);
+        handle(input);
+    }
+
+    private void continueInput(String line) {
+        helper.append(line);
+        helper.append(String.format("%n"));
+    }
+
     private void handle(String input) {
         if (input.startsWith(Flag.CONNECT_TO_ROOM.asString())) {
-            parseRoom(input, Flag.CONNECT_TO_ROOM).ifPresent(room -> writer.write(Command.CONNECT_TO_ROOM, room)); //todo: somewhere here I have to block/reset ?
+            parseRoom(input, Flag.CONNECT_TO_ROOM).ifPresent(room -> writer.write(Command.CONNECT_TO_ROOM, room));
         } else if (input.startsWith(Flag.LOGIN.asString())) {
             parsePerson(input, Flag.LOGIN).ifPresent(person -> writer.write(Command.LOGIN, person));
         } else if (input.startsWith(Flag.REGISTER.asString())) {
             parsePerson(input, Flag.REGISTER).ifPresent(person -> writer.write(Command.REGISTER, person));
-        } else if (input.startsWith(Flag.GET_ROOMS.asString())) {
+        } else if (input.equals(Flag.GET_ROOMS.asString())) {
             writer.write(GET_ROOMS);
-        } else if (input.startsWith(Flag.LEAVE_THE_ROOM.asString())) {
+        } else if (input.equals(Flag.LEAVE_THE_ROOM.asString())) {
             writer.write(LEAVE_THE_ROOM);
         } else if (input.startsWith(Flag.CREATE_A_ROOM.asString())) {
             parseRoom(input, Flag.CREATE_A_ROOM).ifPresent(room -> writer.write(Command.CREATE_A_ROOM, room));
-        } else if (input.startsWith(Flag.ROOM_STATUS.asString())) {
+        } else if (input.equals(Flag.ROOM_STATUS.asString())) {
             writer.write(ROOM_STATUS);
-        } else if (input.startsWith(Flag.EXIT.asString())) {
+        } else if (input.equals(Flag.EXIT.asString())) {
             writer.write(DISCONNECT);
             writer.close();
             System.exit(0);
-        } else if (input.startsWith(Flag.HELP.asString())) {
+        } else if (input.equals(Flag.HELP.asString())) {
             help();
-        } else if (input.startsWith(Flag.FLAG_KEYWORD.asString())) {
+        } else if (input.equals(Flag.FLAG_KEYWORD.asString())) {
             printAllSupportedFlags();
         } else {
             writer.write(Command.MESSAGE, new Message(input, LocalDateTime.now()));

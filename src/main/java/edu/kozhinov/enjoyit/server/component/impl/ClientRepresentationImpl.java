@@ -73,7 +73,7 @@ public class ClientRepresentationImpl implements ClientRepresentation {
     }
 
     @Override
-    public void sendToClientApplication(Message message) { //thread #3 to send messages from other clients asynchronous
+    public void sendToClientApplication(Message message) {
         writer.write(Command.MESSAGE, message);
     }
 
@@ -110,7 +110,7 @@ public class ClientRepresentationImpl implements ClientRepresentation {
 
     @Override
     public void handle(Response response) { //client got server updates (got another clients messages)
-        if (response.getCommand().equals(Command.MESSAGE_LOST)) { //todo: what will happens if user left room where he was?
+        if (response.getCommand().equals(Command.MESSAGE_LOST)) {
             messageLost(response);
         } else {
             log.warn("Some strange behaviour was traced. Client sent a response, but it's unknown situation. " +
@@ -134,7 +134,6 @@ public class ClientRepresentationImpl implements ClientRepresentation {
     private void enterRoom(Request request) {
         Command command = request.getCommand();
         Room room = jsonMapper.readValue(request.getJsonBody(), Room.class);
-        //todo: validate
         Optional<Room> optional = roomRepository.findByName(room.getName());
         if (optional.isPresent()) {
             Room wanted = optional.get();
@@ -154,7 +153,6 @@ public class ClientRepresentationImpl implements ClientRepresentation {
     private void login(Request request) {
         Command command = request.getCommand();
         Person person = jsonMapper.readValue(request.getJsonBody(), Person.class);
-        //todo: validate
         Optional<Person> optional = personRepository.findByUsername(person.getUsername());
         if (optional.isPresent()) {
             Person wanted = optional.get();
@@ -175,7 +173,6 @@ public class ClientRepresentationImpl implements ClientRepresentation {
 
     private void register(Request request) {
         Person person = jsonMapper.readValue(request.getJsonBody(), Person.class);
-        //todo: validate
         person.setCurrentRoom(this.person.getCurrentRoom());
         Person saved = personRepository.save(person);
         this.person = saved;
@@ -221,7 +218,6 @@ public class ClientRepresentationImpl implements ClientRepresentation {
 
     private void createRoom(Request request) {
         Room room = jsonMapper.readValue(request.getJsonBody(), Room.class);
-        //todo: validation; room.name have to be unique
         Room saved = roomRepository.save(room);
         server.addRoom(room);
         writer.write(Command.CREATE_A_ROOM, Status.OK, saved);
